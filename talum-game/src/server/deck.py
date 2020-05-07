@@ -1,6 +1,6 @@
 import random
 
-from .cards import Card
+from .cards import Card, Color
 
 
 class Deck:
@@ -10,7 +10,7 @@ class Deck:
 
     def _build(self):
         cards = []
-        for colour in ["Trefle", "Carreau", "Coeur", "Pique"]:
+        for colour in Color:
             for value in range(1, 14):
                 cards.append(Card(colour, value))
         random.shuffle(cards)

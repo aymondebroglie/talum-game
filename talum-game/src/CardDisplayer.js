@@ -1,5 +1,6 @@
 import React from "react";
-import Card from "./Card";
+import PlayingCard from "./Cards/PlayingCard";
+import './CardDisplayer.css'
 
 class CardDisplayer extends React.Component {
 
@@ -8,20 +9,18 @@ class CardDisplayer extends React.Component {
         if (this.props.mode === "VIEW_CARDS") {
             return (
                 <div>
-                    <Card hidden={false} color={this.props.cards[0].color}
-                          value={this.props.cards[0].value}/>
-                    <Card hidden={false} color={this.props.cards[0].color}
-                          value={this.props.cards[1].value}/>
-                    <Card hidden={true} color={this.props.cards[0].color}
-                          value={this.props.cards[2].value}/>
-                    <Card hidden={true} color={this.props.cards[0].color}
-                          value={this.props.cards[3].value}/>
+                    <div className="Card-Displayer">
+                        <PlayingCard position={0} flipped={false} card={this.props.cards[0]}/>
+                        <PlayingCard position={1} flipped={false} card={this.props.cards[1]}/>
+                        <PlayingCard position={2} flipped={true} card={this.props.cards[2]}/>
+                        <PlayingCard position={3} flipped={true} card={this.props.cards[3]}/>
+                    </div>
                     <button onClick={() => this.done_viewing_card()}> Done viewing cards</button>
                 </div>)
         } else {
             const elements = [];
             for (let i = 0; i < this.props.cards.length; i++) {
-                elements.push(<Card hiden={true} color={this.props.cards[i].color} value={this.props.cards[i].value}/>);
+                elements.push(<PlayingCard flipped={true} card={this.props.cards[i]}/>);
             }
             return (<div>{elements}</div>)
         }

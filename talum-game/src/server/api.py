@@ -37,7 +37,7 @@ def start_game():
     game_id = request.args.get("gameId")
     game: Game = games.get(game_id)
     game.start_game()
-    socket_io.emit("currentCard", game.current_card.__dict__, broadcast=True)
+    socket_io.emit("currentCard", game.current_card.for_front(), broadcast=True)
     for player in game.players.values():
         socket_io.emit("cardUpdate", player.get_cards_for_json(), room=player.id)
     socket_io.emit("stateUpdate", "VIEW_CARDS")

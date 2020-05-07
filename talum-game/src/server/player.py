@@ -9,5 +9,4 @@ class Player:
         self.cards.append(card)
 
     def get_cards_for_json(self):
-        return [card.__dict__ for card in self.cards]
-
+        return [card.for_front() for card in self.cards]
