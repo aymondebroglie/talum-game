@@ -9,17 +9,18 @@ class PlayingCard extends Component {
     }
 
     onClick() {
-        // this.props.onClick(this.props.card);
-        console.log('position: ',)
+        if (this.props.card !== "") {
+            this.props.onClick();
+        }
     }
 
     render() {
         return (
-            <img ref={this.props.card}
-                 className='Playing-card'
-                 src={this.props.flipped === true ? PlayingCardsList.flipped : PlayingCardsList[this.props.card]}
-                 alt={this.props.flipped === true ? 'Hidden Card' : PlayingCardsList[this.props.card]}
-                 onClick={this.onClick.bind(this)}
+            <img
+                className={`Playing-card ${this.props.selected ? 'selected' : ''}`}
+                src={this.props.flipped === true ? PlayingCardsList.flipped : PlayingCardsList[this.props.card]}
+                alt={this.props.flipped === true ? 'Hidden Card' : PlayingCardsList[this.props.card]}
+                onClick={this.onClick.bind(this)}
             />
         );
     }

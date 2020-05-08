@@ -5,6 +5,7 @@ from typing import Dict, List
 from flask import Flask, request
 from flask_socketio import SocketIO
 
+from .cards import Card
 from .game import Game
 
 app = Flask(__name__)
@@ -38,7 +39,7 @@ def start_game():
     game: Game = games.get(game_id)
     game.start_game()
     socket_io.emit("currentCard", game.current_card.for_front(), broadcast=True)
-    for player in game.players.values():
+    for player in game.players:
         socket_io.emit("cardUpdate", player.get_cards_for_json(), room=player.id)
     socket_io.emit("stateUpdate", "VIEW_CARDS")
     return {}
@@ -46,12 +47,27 @@ def start_game():
 
 @app.route('/done_viewing_card', methods=['Post'])
 def done_viewing_card():
-    client_id = request.args.get("playerId")
-    game_id = request.args.get("gameId")
-    game = games[game_id]
-    game.player_is_done_viewing(client_id)
+    player_id, game = retrieve_player_and_game()
+    game.player_is_done_viewing(player_id)
     if game.all_player_are_done_viewing():
         socket_io.emit("stateUpdate", "GAME_RUNNING", broadcast=True)
+        starting_player_id = game.run_after_viewing()
+        socket_io.emit("newTurn", starting_player_id, broadcast=True)
+    return {}
+
+
+def retrieve_player_and_game():
+    player_id = request.args.get("playerId")
+    game_id = request.args.get("gameId")
+    game = games[game_id]
+    return player_id, game
+
+
+@app.route('/draw_card', methods=['Post'])
+def draw_card():
+    player_id, game = retrieve_player_and_game()
+    card_drawn: Card = game.draw_card(player_id)
+    socket_io.emit('cardDrawn', card_drawn.for_front(), room=player_id)
     return {}
 
 
