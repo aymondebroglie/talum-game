@@ -1,4 +1,5 @@
 import random
+import time
 from string import ascii_letters
 from typing import Dict, List
 
@@ -52,8 +53,25 @@ def done_viewing_card():
     if game.all_player_are_done_viewing():
         socket_io.emit("stateUpdate", "GAME_RUNNING", broadcast=True)
         starting_player_id = game.run_after_viewing()
-        socket_io.emit("newTurn", starting_player_id, broadcast=True)
+        emit_new_turn(starting_player_id)
     return {}
+
+
+@app.route('/replace_drawn', methods=['Post'])
+def replacing_with_drawn():
+    player_id, game = retrieve_player_and_game()
+    pos_exchange = int(request.args.get("position"))
+    player, next_player_id = game.replace_with_drawn(player_id, pos_exchange)
+    socket_io.emit('updateCurrentCard', game.current_card.for_front(), broadcast=True)
+    time.sleep(0.2)
+    emit_new_turn(next_player_id)
+    time.sleep(0.2)
+    socket_io.emit('cardUpdate', player.get_cards_for_json(), room=player.id)
+    return {}
+
+
+def emit_new_turn(player_id):
+    socket_io.emit('newTurn', player_id, broadcast=True)
 
 
 def retrieve_player_and_game():

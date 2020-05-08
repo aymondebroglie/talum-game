@@ -43,12 +43,16 @@ class GameRunner extends React.Component {
         this.props.socket.on("newTurn", currentPlayer =>
             this.handleNewTurn(currentPlayer))
         this.props.socket.on('cardDrawn', cardDrawn => this.handleCardDraw(cardDrawn))
+        this.props.socket.on('updateCurrentCard', currentCard => this.setState({currentCard: currentCard}))
     }
 
     handleNewTurn(currentPlayer) {
         if (this.props.socket.id === currentPlayer) {
             this.setState({mode: MODE.YOUR_TURN});
+        } else {
+            this.setState({mode: MODE.NOT_YOUR_TURN})
         }
+
     }
 
     drawCard() {
@@ -64,7 +68,11 @@ class GameRunner extends React.Component {
     }
 
     onClickCardDrawn() {
-
+        if (this.state.selectedFromHand !== -1) {
+            fetch(
+                `/replace_drawn?playerId=${this.props.socket.id}&gameId=${this.props.gameId}&position=${this.state.selectedFromHand}`
+                , {method: 'POST'})
+        }
     }
 
     onClickInHand(pos) {
