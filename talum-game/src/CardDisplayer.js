@@ -6,21 +6,28 @@ class CardDisplayer extends React.Component {
 
 
     render() {
+        const cardElements = [];
+        for (let i = 0; i < this.props.cards.length; i++) {
+            cardElements.push(<div
+                style={{'gridColumn': i % 2 + 1, 'gridRow': Math.floor(i / 2) + 1}}>
+                < PlayingCard flipped={true} card={this.props.cards[i]}/></div>);
+        }
+
         if (this.props.mode === "VIEW_CARDS") {
             return (
                 <div>
                     <div className="Card-Displayer">
-                        <PlayingCard position={0} flipped={false} card={this.props.cards[0]}/>
-                        <PlayingCard position={1} flipped={false} card={this.props.cards[1]}/>
-                        <PlayingCard position={2} flipped={true} card={this.props.cards[2]}/>
-                        <PlayingCard position={3} flipped={true} card={this.props.cards[3]}/>
+                        {cardElements}
                     </div>
-                    <button onClick={() => this.done_viewing_card()}> Done viewing cards</button>
-                </div>)
+                    <button className={"viewCardButton"} onClick={() => this.done_viewing_card()}> Done viewing
+                        cards
+                    </button>
+                </div>
+            )
         } else {
             const elements = [];
             for (let i = 0; i < this.props.cards.length; i++) {
-                elements.push(<PlayingCard flipped={true} card={this.props.cards[i]}/>);
+                elements.push(<PlayingCard position={i} flipped={true} card={this.props.cards[i]}/>);
             }
             return (<div>{elements}</div>)
         }

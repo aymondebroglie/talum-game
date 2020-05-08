@@ -9,16 +9,13 @@ class PlayingCard extends Component {
     }
 
     onClick() {
-        this.props.onClick(this.props.card);
+        // this.props.onClick(this.props.card);
         console.log('position: ',)
     }
 
     render() {
-
         return (
             <img ref={this.props.card}
-                 style={{'gridRow': this.props.position % 2 + 1, 'gridColumn': Math.floor(this.props.position / 2) + 1}}
-                // height={this.props.height}
                  className='Playing-card'
                  src={this.props.flipped === true ? PlayingCardsList.flipped : PlayingCardsList[this.props.card]}
                  alt={this.props.flipped === true ? 'Hidden Card' : PlayingCardsList[this.props.card]}

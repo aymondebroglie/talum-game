@@ -1,5 +1,4 @@
 import React from "react";
-import CardDisplayer from "./CardDisplayer";
 
 
 class GameRunner extends React.Component {
@@ -9,9 +8,11 @@ class GameRunner extends React.Component {
     }
 
     render() {
-        const main_block = []
-        main_block.push(<CardDisplayer cards={this.props.cards}/>)
-        return (<div>The game is running </div>)
+        return (
+            <div>
+                Hello
+            </div>
+        )
     }
 }
 
