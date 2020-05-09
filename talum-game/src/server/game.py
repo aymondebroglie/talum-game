@@ -1,7 +1,7 @@
 import random
 from typing import List
 
-from .cards import Card
+from .cards import Card, EmptyCard
 from .deck import Deck
 from .player import Player
 
@@ -91,3 +91,12 @@ class Game:
 
     def compute_player_scores(self):
         return {player.id: player.score() for player in self.players}
+
+    def put_on_current_card(self, player_id, pos):
+        player = self.find_player(player_id)
+        if player.cards[pos].value == self.current_card.value:
+            self.current_card = player.cards[pos]
+            player.cards[pos] = EmptyCard()
+        else:
+            player.cards.append(self.card_deck.next())
+        return player

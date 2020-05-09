@@ -41,7 +41,7 @@ class GameRunner extends React.Component {
         }
         elements.push(
             <PlayingCard selected={false}
-                         onclick={() => this.onClickCurrentCard()}
+                         onClick={() => this.onClickCurrentCard()}
                          className='currentCard'
                          flipped={false}
                          card={this.state.currentCard}/>)
@@ -109,7 +109,11 @@ class GameRunner extends React.Component {
     }
 
     onClickCurrentCard() {
-
+        if (this.state.selectedFromHand !== -1) {
+            fetch(
+                `/put_on_current_card?playerId=${this.props.socket.id}&gameId=${this.props.gameId}&position=${this.state.selectedFromHand}`
+                , {method: 'POST'})
+        }
     }
 
     passTurn() {

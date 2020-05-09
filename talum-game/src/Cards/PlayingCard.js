@@ -15,6 +15,9 @@ class PlayingCard extends Component {
     }
 
     render() {
+        if (this.props.card === "") {
+            return (<div> No card</div>)
+        }
         return (
             <img
                 className={`Playing-card ${this.props.selected ? 'selected' : ''}`}

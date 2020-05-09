@@ -40,3 +40,14 @@ class Card:
     def is_red(self):
         print(self.color)
         return self.color == Color.Carreau or self.color == Color.Coeur
+
+
+class EmptyCard(Card):
+    def __init__(self):
+        super().__init__(None, None)
+
+    def for_front(self):
+        return ""
+
+    def score(self) -> int:
+        return 0
