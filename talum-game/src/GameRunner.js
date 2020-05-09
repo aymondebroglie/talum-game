@@ -1,7 +1,7 @@
 import React from "react";
 import PlayingCard from "./Cards/PlayingCard";
 import CardDisplayer from "./CardDisplayer";
-
+import './GameRunner.css'
 
 const MODE = {
     NOT_YOUR_TURN: "NOT_YOUR_TURN",
@@ -33,10 +33,11 @@ class GameRunner extends React.Component {
                 ! </button>)
         }
         if (this.state.mode === MODE.CARD_DRAWN) {
-            elements.push(<PlayingCard selected={false}
-                                       onClick={() => this.onClickCardDrawn()}
-                                       flipped={false}
-                                       card={this.state.cardDrawn}/>)
+            elements.push(<div className={'drawnCard'}><PlayingCard
+                selected={false}
+                onClick={() => this.onClickCardDrawn()}
+                flipped={false}
+                card={this.state.cardDrawn}/></div>)
             elements.push(<button
                 onClick={() => this.passTurn()}> Pass </button>)
         }
@@ -44,11 +45,12 @@ class GameRunner extends React.Component {
             elements.push(<div>{this.state.result}</div>)
         }
         elements.push(
-            <PlayingCard selected={false}
-                         onClick={() => this.onClickCurrentCard()}
-                         className='currentCard'
-                         flipped={false}
-                         card={this.state.currentCard}/>)
+            <div className={'currentCard'}>
+                <PlayingCard selected={false}
+                             onClick={() => this.onClickCurrentCard()}
+                             className={'currentCard'}
+                             flipped={false}
+                             card={this.state.currentCard}/></div>)
 
         elements.push(<CardDisplayer mode={this.state.displayCardMode}
                                      selected={this.state.selectedFromHand}
