@@ -7,30 +7,48 @@ const MODE = {
     NOT_YOUR_TURN: "NOT_YOUR_TURN",
     YOUR_TURN: "DRAWING_CARD",
     CARD_DRAWN: "CARD_DRAWNN",
+    TALOUM_SAID: "TALOUM_SAID"
 }
 
 class GameRunner extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {currentCard: "", mode: "NOT_YOUR_TURN", cardDrawn: "", selectedFromHand: -1}
+        this.state = {
+            currentCard: "", mode: "NOT_YOUR_TURN",
+            cardDrawn: "", selectedFromHand: -1, result: "",
+            displayCardMode: ""
+        }
     }
 
     render() {
         const elements = []
         if (this.state.mode === MODE.YOUR_TURN) {
-            elements.push(<button onClick={() => this.drawCard()}> Draw a card ! </button>)
-            elements.push(<button onClick={() => this.taloum()}> Taloum ! </button>)
+            elements.push(<button onClick={() => this.drawCard()}> Draw a card
+                ! </button>)
+            elements.push(<button onClick={() => this.taloum()}> Taloum
+                ! </button>)
         }
         if (this.state.mode === MODE.CARD_DRAWN) {
-            elements.push(<PlayingCard selected={false} onClick={() => this.onClickCardDrawn()} flipped={false}
+            elements.push(<PlayingCard selected={false}
+                                       onClick={() => this.onClickCardDrawn()}
+                                       flipped={false}
                                        card={this.state.cardDrawn}/>)
+            elements.push(<button
+                onClick={() => this.passTurn()}> Pass </button>)
+        }
+        if (this.state.mode === MODE.TALOUM_SAID) {
+            elements.push(<div>{this.state.result}</div>)
         }
         elements.push(
-            <PlayingCard selected={false} onclick={() => this.onClickCurrentCard()} className='currentCard'
+            <PlayingCard selected={false}
+                         onclick={() => this.onClickCurrentCard()}
+                         className='currentCard'
                          flipped={false}
                          card={this.state.currentCard}/>)
 
-        elements.push(<CardDisplayer selected={this.state.selectedFromHand} onClick={pos => this.onClickInHand(pos)}
+        elements.push(<CardDisplayer mode={this.state.displayCardMode}
+                                     selected={this.state.selectedFromHand}
+                                     onClick={pos => this.onClickInHand(pos)}
                                      cards={this.props.cards}/>)
         return (
             <div>
@@ -44,6 +62,11 @@ class GameRunner extends React.Component {
             this.handleNewTurn(currentPlayer))
         this.props.socket.on('cardDrawn', cardDrawn => this.handleCardDraw(cardDrawn))
         this.props.socket.on('updateCurrentCard', currentCard => this.setState({currentCard: currentCard}))
+        this.props.socket.on('taloum', result => this.setState({
+            result: result,
+            mode: MODE.TALOUM_SAID,
+            displayCardMode: "FINISHED"
+        }))
     }
 
     handleNewTurn(currentPlayer) {
@@ -60,7 +83,8 @@ class GameRunner extends React.Component {
     }
 
     taloum() {
-        return undefined;
+        fetch(`/taloum?playerId=${this.props.socket.id}&gameId=${this.props.gameId}`,
+            {method: "POST"})
     }
 
     handleCardDraw(cardDrawn) {
@@ -72,6 +96,7 @@ class GameRunner extends React.Component {
             fetch(
                 `/replace_drawn?playerId=${this.props.socket.id}&gameId=${this.props.gameId}&position=${this.state.selectedFromHand}`
                 , {method: 'POST'})
+            this.setState({selectedFromHand: -1})
         }
     }
 
@@ -85,6 +110,12 @@ class GameRunner extends React.Component {
 
     onClickCurrentCard() {
 
+    }
+
+    passTurn() {
+        fetch(
+            `/pass_turn?playerId=${this.props.socket.id}&gameId=${this.props.gameId}`
+            , {method: 'POST'})
     }
 }
 

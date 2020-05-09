@@ -54,7 +54,18 @@ class Game:
         player = self.find_player(player_id)
         replaced_card = player.cards[pos_exchange]
         player.cards[pos_exchange] = self.card_drawn
+        self.card_drawn = None
         self.current_card = replaced_card
+        self.next_turn()
+        return player, self.players[self.current_player_idx].id
+
+    def pass_turn(self, player_id):
+        self.check_turn(player_id)
+        if self.card_drawn is None:
+            raise ValueError("No card drawn ! ")
+        player = self.find_player(player_id)
+        self.current_card = self.card_drawn
+        self.card_drawn = None
         self.next_turn()
         return player, self.players[self.current_player_idx].id
 
@@ -65,3 +76,18 @@ class Game:
 
     def next_turn(self):
         self.current_player_idx = (self.current_player_idx + 1) % len(self.players)
+
+    def taloum(self, player_id):
+        self.check_turn(player_id)
+        scores = self.compute_player_scores()
+        taloum_player_score = scores[player_id]
+        if taloum_player_score > 7:
+            return f"Talum failed for {player_id} score is {taloum_player_score} bigger than 7 "
+        for other_player, score in scores.items():
+            if taloum_player_score > score:
+                return f"Taloum failed for {player_id}, {other_player} has a score of {score} lower than" \
+                       f" {taloum_player_score}"
+        return f"Taloum successful for player {player_id} with a score of {taloum_player_score}"
+
+    def compute_player_scores(self):
+        return {player.id: player.score() for player in self.players}

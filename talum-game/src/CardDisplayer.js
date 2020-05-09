@@ -8,12 +8,7 @@ class CardDisplayer extends React.Component {
     render() {
         const cardElements = [];
         for (let i = 0; i < this.props.cards.length; i++) {
-            let flipped = true;
-            if ((this.props.mode === "VIEW_CARDS") && (i === 2 || i === 0
-            )) {
-                flipped = false;
-            }
-
+            let flipped = this.determineIfFlipped(i);
             let selected = false;
             if (this.props.selected === i)
                 selected = true;
@@ -32,7 +27,7 @@ class CardDisplayer extends React.Component {
 
         if (this.props.mode === "VIEW_CARDS")
             displayer.push(
-                <button className={"viewCardButton"} onClick={() => this.done_viewing_card()}> Done viewing
+                <button className={"viewCardButton"} onClick={() => this.doneViewingCard()}> Done viewing
                     cards
                 </button>)
         return (
@@ -42,7 +37,18 @@ class CardDisplayer extends React.Component {
         )
     }
 
-    done_viewing_card() {
+    determineIfFlipped(i) {
+        let flipped = true;
+        if ((this.props.mode === "VIEW_CARDS") && (i === 2 || i === 0
+        )) {
+            flipped = false;
+        }
+        if (this.props.mode === "FINISHED")
+            flipped = false
+        return flipped;
+    }
+
+    doneViewingCard() {
         fetch(`/done_viewing_card?playerId=${this.props.socket.id}&gameId=${this.props.gameId}`,
             {method: 'POST'})
     }

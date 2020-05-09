@@ -70,6 +70,24 @@ def replacing_with_drawn():
     return {}
 
 
+@app.route('/pass_turn', methods=['Post'])
+def pass_turn():
+    player_id, game = retrieve_player_and_game()
+    player, next_player_id = game.pass_turn(player_id)
+    socket_io.emit('updateCurrentCard', game.current_card.for_front(), broadcast=True)
+    time.sleep(0.2)
+    emit_new_turn(next_player_id)
+    return {}
+
+
+@app.route('/taloum', methods=['Post'])
+def taloum():
+    player_id, game = retrieve_player_and_game()
+    result = game.taloum(player_id)
+    socket_io.emit("taloum", result, broadcast=True)
+    return {}
+
+
 def emit_new_turn(player_id):
     socket_io.emit('newTurn', player_id, broadcast=True)
 
