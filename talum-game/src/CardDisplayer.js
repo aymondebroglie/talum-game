@@ -14,8 +14,12 @@ class CardDisplayer extends React.Component {
                 selected = true;
 
             cardElements.push(<div
-                style={{'gridColumn': i % 2 + 1, 'gridRow': Math.floor(i / 2) + 1}}>
-                <PlayingCard onClick={() => this.onClickCard(i)} selected={selected} flipped={flipped}
+                style={{
+                    'gridRow': i % 2 + 1,
+                    'gridColumn': Math.floor(i / 2) + 1
+                }}>
+                <PlayingCard onClick={() => this.onClickCard(i)}
+                             selected={selected} flipped={flipped}
                              card={this.props.cards[i]}/></div>);
         }
 
@@ -27,7 +31,8 @@ class CardDisplayer extends React.Component {
 
         if (this.props.mode === "VIEW_CARDS")
             displayer.push(
-                <button className={"viewCardButton"} onClick={() => this.doneViewingCard()}> Done viewing
+                <button className={"viewCardButton"}
+                        onClick={() => this.doneViewingCard()}> Done viewing
                     cards
                 </button>)
         return (
@@ -39,7 +44,7 @@ class CardDisplayer extends React.Component {
 
     determineIfFlipped(i) {
         let flipped = true;
-        if ((this.props.mode === "VIEW_CARDS") && (i === 2 || i === 0
+        if ((this.props.mode === "VIEW_CARDS") && (i === 3 || i === 1
         )) {
             flipped = false;
         }
