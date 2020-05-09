@@ -12,7 +12,7 @@ class Game:
         self.id = id
         self.players: List[Player] = []
         self.card_deck: Deck = Deck()
-        self.current_card: Card = None
+        self.current_card_stack: List[Card] = [EmptyCard()]
 
         self.current_player_idx: int = None
         self.card_drawn: Card = None
@@ -24,8 +24,6 @@ class Game:
         for player in self.players:
             for _ in range(4):
                 player.give_card(self.card_deck.next())
-
-        self.current_card = self.card_deck.next()
 
     def player_is_done_viewing(self, client_id):
         player = self.find_player(client_id)
@@ -55,7 +53,7 @@ class Game:
         replaced_card = player.cards[pos_exchange]
         player.cards[pos_exchange] = self.card_drawn
         self.card_drawn = None
-        self.current_card = replaced_card
+        self.current_card_stack.append(replaced_card)
         self.next_turn()
         return player, self.players[self.current_player_idx].id
 
@@ -64,7 +62,7 @@ class Game:
         if self.card_drawn is None:
             raise ValueError("No card drawn ! ")
         player = self.find_player(player_id)
-        self.current_card = self.card_drawn
+        self.current_card_stack.append(self.card_drawn)
         self.card_drawn = None
         self.next_turn()
         return player, self.players[self.current_player_idx].id
@@ -94,9 +92,14 @@ class Game:
 
     def put_on_current_card(self, player_id, pos):
         player = self.find_player(player_id)
-        if player.cards[pos].value == self.current_card.value:
-            self.current_card = player.cards[pos]
+        if player.cards[pos].value == self.current_card_stack[-1].value:
+            self.current_card_stack.append(player.cards[pos])
             player.cards[pos] = EmptyCard()
         else:
             player.cards.append(self.card_deck.next())
         return player
+
+    def draw_current_card(self, player_id):
+        self.check_turn(player_id)
+        self.card_drawn = self.current_card_stack.pop()
+        return self.card_drawn

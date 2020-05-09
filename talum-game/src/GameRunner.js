@@ -25,6 +25,10 @@ class GameRunner extends React.Component {
         if (this.state.mode === MODE.YOUR_TURN) {
             elements.push(<button onClick={() => this.drawCard()}> Draw a card
                 ! </button>)
+            if (this.state.currentCard !== "")
+                elements.push(<button
+                    onClick={() => this.drawCurrentCard()}>Draw
+                    current card </button>)
             elements.push(<button onClick={() => this.taloum()}> Taloum
                 ! </button>)
         }
@@ -120,6 +124,10 @@ class GameRunner extends React.Component {
         fetch(
             `/pass_turn?playerId=${this.props.socket.id}&gameId=${this.props.gameId}`
             , {method: 'POST'})
+    }
+
+    drawCurrentCard() {
+        fetch(`/draw_current_card?playerId=${this.props.socket.id}&gameId=${this.props.gameId}`, {method: 'POST'})
     }
 }
 

@@ -39,7 +39,6 @@ def start_game():
     game_id = request.args.get("gameId")
     game: Game = games.get(game_id)
     game.start_game()
-    socket_io.emit("currentCard", game.current_card.for_front(), broadcast=True)
     for player in game.players:
         socket_io.emit("cardUpdate", player.get_cards_for_json(), room=player.id)
     socket_io.emit("stateUpdate", "VIEW_CARDS")
@@ -62,7 +61,7 @@ def replacing_with_drawn():
     player_id, game = retrieve_player_and_game()
     pos_exchange = int(request.args.get("position"))
     player, next_player_id = game.replace_with_drawn(player_id, pos_exchange)
-    socket_io.emit('updateCurrentCard', game.current_card.for_front(), broadcast=True)
+    emit_current_card(game)
     time.sleep(0.2)
     emit_new_turn(next_player_id)
     time.sleep(0.2)
@@ -80,8 +79,18 @@ def pass_turn():
     return {}
 
 
+@app.route('/draw_current_card', methods=['Post'])
+def draw_current_card():
+    player_id, game = retrieve_player_and_game()
+    card_drawn: Card = game.draw_current_card(player_id)
+    emit_current_card(game)
+    time.sleep(0.2)
+    socket_io.emit('cardDrawn', card_drawn.for_front(), room=player_id)
+    return {}
+
+
 def emit_current_card(game):
-    socket_io.emit('updateCurrentCard', game.current_card.for_front(), broadcast=True)
+    socket_io.emit('updateCurrentCard', game.current_card_stack[-1].for_front(), broadcast=True)
 
 
 @app.route('/put_on_current_card', methods=['Post'])
