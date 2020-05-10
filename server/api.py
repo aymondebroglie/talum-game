@@ -5,15 +5,20 @@ from typing import Dict, List
 
 from flask import Flask, request
 from flask_socketio import SocketIO
+from game.cards import Card
+from game.game import Game
 
-from .cards import Card
-from .game import Game
-
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='', static_folder='../client/build')
 app.config["SECRET_KEY"] = 'SECRET'
 socket_io = SocketIO(app, cors_allowed_origins='http://localhost:3000')
 games: Dict[str, Game] = {}
 clients: List[str] = []
+
+
+@app.route('/')
+def root():
+    print("Hello")
+    return app.send_static_file('index.html')
 
 
 @socket_io.on("connect")
