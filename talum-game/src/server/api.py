@@ -34,6 +34,13 @@ def create_game():
     return {"gameId": game_id}
 
 
+@app.route('/join_game', methods=['POST'])
+def join_game():
+    player_id, game = retrieve_player_and_game()
+    game.add_player(player_id)
+    return {"gameId": game.id}
+
+
 @app.route('/start_game', methods=['POST'])
 def start_game():
     game_id = request.args.get("gameId")
