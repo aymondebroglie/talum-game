@@ -16,6 +16,7 @@ games: Dict[str, Game] = {}
 clients: List[str] = []
 
 PORT = int(os.environ.get('PORT', 5000))
+print(PORT)
 
 
 @app.route('/')
