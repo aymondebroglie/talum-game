@@ -1,3 +1,4 @@
+import os
 import random
 import time
 from string import ascii_letters
@@ -13,6 +14,8 @@ app.config["SECRET_KEY"] = 'SECRET'
 socket_io = SocketIO(app, cors_allowed_origins='http://localhost:3000')
 games: Dict[str, Game] = {}
 clients: List[str] = []
+
+PORT = int(os.environ.get('PORT', 5000))
 
 
 @app.route('/')
@@ -143,4 +146,4 @@ def draw_card():
 
 
 if __name__ == '__main__':
-    socket_io.run(app)
+    socket_io.run(app, port=PORT)
