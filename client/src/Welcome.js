@@ -1,5 +1,5 @@
 import React from "react";
-import openSocket from "socket.io-client";
+import io from "socket.io-client";
 import Game from "./Game";
 
 const GAME_STATE = {
@@ -8,7 +8,7 @@ const GAME_STATE = {
     JOINING_GAME: 3
 };
 
-const socket = openSocket("http://localhost:5000")
+const socket = io()
 
 class Welcome extends React.Component {
 
