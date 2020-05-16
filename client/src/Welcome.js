@@ -7,8 +7,9 @@ const GAME_STATE = {
     GAME_NO_STARTED: 0,
     JOINING_GAME: 3
 };
+// const socket = io('https://taloum-game.herokuapp.com:' + process.env.PORT)
+const socket = io(window.location.origin)
 
-const socket = io()
 
 class Welcome extends React.Component {
 
@@ -29,6 +30,7 @@ class Welcome extends React.Component {
     }
 
     render() {
+        console.log(window.location)
         switch (this.state.game_state) {
             case GAME_STATE.GAME_NO_STARTED:
                 return (

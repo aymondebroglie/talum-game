@@ -11,7 +11,7 @@ from game.game import Game
 
 app = Flask(__name__, static_url_path='', static_folder='../client/build')
 app.config["SECRET_KEY"] = 'SECRET'
-socket_io = SocketIO(app, cors_allowed_origins='http://localhost:3000')
+socket_io = SocketIO(app)
 games: Dict[str, Game] = {}
 clients: List[str] = []
 
